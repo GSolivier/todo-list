@@ -23,20 +23,8 @@ const ContainerButtons = styled.div`
   display: flex;
 `;
 
-const CardsTasks = ({ textTitle, taskId }) => {
+const CardsTasks = ({ textTitle, taskId, onDelete, onEdit }) => {
   
-  function cancelTaskById(taskId) {
-    const taskIndex = TasksUser.findIndex((task) => task.id === taskId);
-
-    if (taskIndex !== -1) {
-      TasksUser.splice(taskIndex, 1);
-      alert(`Tarefa com id ${taskId} removida.`);
-    } else {
-      alert("Tarefa não encontrada");
-    }
-
-    console.log("Lista atualizada:", TasksUser);
-  }
 
   return (
     <>
@@ -62,7 +50,7 @@ const CardsTasks = ({ textTitle, taskId }) => {
             backgroundColor={"transparent"}
             border={"transparent"}
             fontWeight={800}
-            onClick={() => cancelTaskById(taskId)}
+            onClick={() => onDelete(taskId)}
           />
 
           <Button
@@ -71,6 +59,7 @@ const CardsTasks = ({ textTitle, taskId }) => {
             backgroundColor={"transparent"}
             border={"transparent"}
             fontWeight={800}
+            onClick={() => onEdit(taskId)}
           />
         </ContainerButtons>
       </Cards>

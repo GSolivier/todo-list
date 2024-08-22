@@ -42,8 +42,10 @@ function App() {
   const [day, setDay] = useState();
   const [randomNumber, setRandomNumber] = useState();
   const [inputValue, setInputValue] = useState();
+  const [searchValue, setSearchValue] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [tasks, setTasks] = useState(TasksUser);
+  const [editingTask, setEditingTask] = useState()
 
   function extensiveDate() {
     var day = [
@@ -90,6 +92,8 @@ function App() {
   }
 
   function closeModal() {
+    setEditingTask(undefined)
+    setInputValue(undefined)
     setModalOpen(false);
   }
 
@@ -116,6 +120,32 @@ function App() {
     closeModal();
   }
 
+  function editTask() {
+
+    var newTask = {
+      id: editingTask.id,
+      description: inputValue
+    };
+  
+
+    var taskIndex = tasks.findIndex(task => task.id === editingTask.id);
+  
+    if (taskIndex !== -1) {
+
+      tasks.splice(taskIndex, 1, newTask);
+
+      setTasks([...tasks]);
+    } else {
+      console.error('Tarefa não encontrada');
+    }
+
+    closeModal()
+  }
+
+  const filteredTasks = tasks.filter(task =>
+    task.description.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   useEffect(() => {
     extensiveDate();
   }, []);
@@ -138,6 +168,12 @@ function App() {
           borderRadius={"10px"}
           width={"50%"}
           height={"25px"}
+          onChange={(e) => {
+            setSearchValue(e.target.value)
+
+
+          }}
+          textValue={searchValue}
           placeholderColor={"white"}
           padding={"10px"}
           textPlaceholder={"Procurar Tarefa"}
@@ -157,7 +193,21 @@ function App() {
           }}
         />
 
-        <Tasks />
+        <Tasks
+          taskList={filteredTasks}
+          onDelete={(taskId) => {
+           
+            setTasks((e) => {return e.filter((e) => e.id != taskId)})
+          }}
+          onEdit={(taskId) => {
+
+            var task = tasks.find((element) => element.id == taskId)
+
+            setEditingTask(task)
+            setInputValue(task.description)
+            openModal()
+          }}
+          />
 
         <Button
           width={"220px"}
@@ -183,7 +233,7 @@ function App() {
           contentLabel="Example Modal"
         >
           <Title
-            textTitle={"Descreva sua tarefa"}
+            textTitle={editingTask ? `Editar tarefa` : "Descreva sua tarefa"}
             color={AppColors.whiteText}
             fontWeight={600}
             fontSize={"24px"}
@@ -199,6 +249,7 @@ function App() {
             position={"relative"}
             left={"50%"}
             top={"20px"}
+            textValue={inputValue}
             textPlaceholder={"Exemplo de descrição"}
             placeholderColor={AppColors.whiteText}
             padding={"10px"}
@@ -208,7 +259,7 @@ function App() {
 
           <Button
             padding={"20px"}
-            textButton={"Confirmar Tarefa"}
+            textButton={editingTask ? "Editar tarefa" : "Confirmar Tarefa"}
             borderRadius={"10px"}
             border={"2px solid white"}
             backgroundColor={AppColors.purpleButton}
@@ -221,7 +272,7 @@ function App() {
             fontSize={"20px"}
             fontWeight={600}
             onClick={() => {
-              createTask();
+              editingTask ? editTask() : createTask();
             }}
           />
         </ReactModal>

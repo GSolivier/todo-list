@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { TasksUser } from "../../services/Tasks";
 import CardsTasks from "../CardsTasks/CardsTasks";
 
 const ContainerTasks = styled.section`
@@ -17,12 +16,12 @@ const ContainerTasks = styled.section`
   scrollbar-color: white transparent;
 `;
 
-const Tasks = () => {
+const Tasks = ({onDelete, onEdit, taskList}) => {
   return (
     <ContainerTasks>
-      {TasksUser.map((title) => {
+      {taskList.map((title) => {
         return (
-          <CardsTasks key={title.id} textTitle={title.description}></CardsTasks>
+          <CardsTasks key={title.id} taskId={title.id} textTitle={title.description} onDelete={onDelete} onEdit={onEdit}></CardsTasks>
         );
       })}
     </ContainerTasks>

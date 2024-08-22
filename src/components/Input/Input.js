@@ -40,7 +40,8 @@ const Input = ({
   right,
   fontSize,
   type,
-  onChange
+  onChange,
+  textValue,
 }) => {
   return (
     <InputTypes
@@ -60,6 +61,7 @@ const Input = ({
       fontSize={fontSize} 
       type={type}
       onChange={onChange}
+      value={textValue}
     ></InputTypes>
   );
 };
